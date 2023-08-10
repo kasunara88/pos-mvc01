@@ -4,16 +4,25 @@
  */
 package pos.mvc01.view;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import pos.mvc01.controller.CustomerController;
+import pos.mvc01.model.CustomerModel;
+
 /**
  *
  * @author wmara
  */
 public class CustomerView extends javax.swing.JFrame {
+    private CustomerController customerController;
 
     /**
      * Creates new form CustomerView
      */
     public CustomerView() {
+        customerController = new CustomerController();
         initComponents();
     }
 
@@ -118,6 +127,11 @@ public class CustomerView extends javax.swing.JFrame {
 
         saveButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         saveButton.setText("Save Customer");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
 
         updateButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         updateButton.setText("Update Customer");
@@ -252,6 +266,10 @@ public class CustomerView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        saveCustomer();
+    }//GEN-LAST:event_saveButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel basePannel;
@@ -280,4 +298,25 @@ public class CustomerView extends javax.swing.JFrame {
     private javax.swing.JButton saveButton;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
+
+    private void saveCustomer(){
+        CustomerModel customer = new CustomerModel(
+                custidText.getText(), 
+                custtitleText.getText(), 
+                custNameText.getText(), 
+                custDOBText.getText(),
+                Double.parseDouble(custSalaryText.getText()), 
+                custAddressText.getText(), 
+                custCityText.getText(), 
+                custProvinceText.getText(), 
+                custPostalText.getText());
+        
+        try {
+            String resp = customerController.saveCustomer(customer);
+            JOptionPane.showMessageDialog(this, resp);
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
 }
